@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<!--
+  index.html — Squidly WebGL deployment wrapper
+  ----------------------------------------------
+  After building in Unity (File > Build Settings > WebGL > Build),
+  copy this file into the build output folder alongside the generated
+  Build/ folder and TemplateData/ folder.
+
+  The `shadow` attribute on <body> is REQUIRED by Squidly — it tells
+  the platform to mount the game inside a Shadow DOM so Squidly's own
+  UI doesn't clash with the game's styles.
+
+  Everything else here is standard Unity WebGL boilerplate.
+  Do NOT remove the shadow attribute.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Focus Game</title>
+  <link rel="stylesheet" href="TemplateData/style.css" />
+</head>
+
+<!-- shadow attribute required by Squidly -->
+<body shadow>
+  <div id="unity-container">
+    <canvas id="unity-canvas"></canvas>
+  </div>
+
+  <script src="TemplateData/UnityProgress.js"></script>
+  <script src="Build/UnityLoader.js"></script>
+  <script>
+    var gameInstance = UnityLoader.instantiate(
+      "unity-container",
+      "Build/FocusGame.json"  // update this filename to match your Unity build output
+    );
+  </script>
+</body>
+</html>
