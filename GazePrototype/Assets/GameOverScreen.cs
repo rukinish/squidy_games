@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class SessionEndManager : MonoBehaviour
+public class GameOverScreen : MonoBehaviour
 {
     public enum GameType { Adventure, Floating, Quiz }
 

@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
 
-public class GazeSensor : MonoBehaviour
+public class MonsterMove : MonoBehaviour
 {
     [Header("Game Settings")]
     public Transform targetGoal;
@@ -164,7 +164,7 @@ public class GazeSensor : MonoBehaviour
     private void ShowManualGameOver()
     {
         EndGame();
-        var endManager = FindObjectOfType<SessionEndManager>();
+        var endManager = FindObjectOfType<GameOverScreen>();
         if (endManager != null)
         {
             endManager.ShowImmediateEndScreen(GetCurrentFocusGameType(), "Session ended manually");
@@ -185,11 +185,11 @@ public class GazeSensor : MonoBehaviour
         SceneManager.LoadScene("calibration");
     }
 
-    private SessionEndManager.GameType GetCurrentFocusGameType()
+    private GameOverScreen.GameType GetCurrentFocusGameType()
     {
         return SceneManager.GetActiveScene().name == "Focus_Personalized"
-            ? SessionEndManager.GameType.Floating
-            : SessionEndManager.GameType.Adventure;
+            ? GameOverScreen.GameType.Floating
+            : GameOverScreen.GameType.Adventure;
     }
 
     private IEnumerator DistractionRoutine(int maxDistractions)

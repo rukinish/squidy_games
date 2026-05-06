@@ -4,7 +4,7 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 
-public class DatabaseManager : MonoBehaviour
+public class DataSaver : MonoBehaviour
 {
     private string dbPath;
 

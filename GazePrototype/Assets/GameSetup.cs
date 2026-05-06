@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
 
-public class GameSetupManager_Default : MonoBehaviour
+public class GameSetup : MonoBehaviour
 {
     [Header("UI Elements")]
     public GameObject setupPopupPanel;
@@ -13,9 +13,9 @@ public class GameSetupManager_Default : MonoBehaviour
     public TMP_InputField threshold; // "Set Max Distractions" input
 
     [Header("Game References")]
-    public GazePlayerController playerController;
+    public ChestController playerController;
     public Collider2D goalChestCollider;
-    public GazeSensor gazeSensor;
+    public MonsterMove gazeSensor;
 
     [Header("Visuals")]
     public SpriteRenderer playerSpriteRenderer;

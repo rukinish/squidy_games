@@ -3,7 +3,7 @@ using System.Collections;
 using System.IO;
 using System;
 
-public class GazePlayerController : MonoBehaviour
+public class ChestController : MonoBehaviour
 {
     public Transform targetGoal;
     public float speed = 2.0f;
@@ -18,7 +18,7 @@ public class GazePlayerController : MonoBehaviour
             {
                 hasReachedGoal = true;
 
-                var gazeSensor = FindObjectOfType<GazeSensor>();
+                var gazeSensor = FindObjectOfType<MonsterMove>();
                 if (gazeSensor != null) gazeSensor.EndGame();
 
                 Debug.Log("[GazePlayerController] Chest reached! Requesting XAI Heatmap...");
@@ -66,11 +66,11 @@ public class GazePlayerController : MonoBehaviour
             Debug.LogWarning("[GazePlayerController] XAI not saved after 35s — face may not have been detected during session, or Python server was off. Saving DB without heatmap.");
         }
 
-        DatabaseManager dbManager = FindObjectOfType<DatabaseManager>();
+        DataSaver dbManager = FindObjectOfType<DataSaver>();
         if (dbManager == null)
         {
             Debug.LogWarning("[GazePlayerController] DatabaseManager not found — creating one.");
-            dbManager = new GameObject("DatabaseManager").AddComponent<DatabaseManager>();
+            dbManager = new GameObject("DataSaver").AddComponent<DataSaver>();
         }
 
         if (dbManager != null)
@@ -92,7 +92,7 @@ public class GazePlayerController : MonoBehaviour
 
         Debug.Log("[GazePlayerController] Focus Session saved to DB gracefully.");
 
-        var endManager = FindObjectOfType<SessionEndManager>();
+        var endManager = FindObjectOfType<GameOverScreen>();
         if (endManager != null) endManager.NotifySessionSaveComplete();
     }
 
@@ -105,8 +105,8 @@ public class GazePlayerController : MonoBehaviour
         File.WriteAllBytes(bgPath, shot.EncodeToPNG());
         Destroy(shot);
 
-        var endManager = FindObjectOfType<SessionEndManager>();
-        if (endManager != null) endManager.ShowEndScreen(SessionEndManager.GameType.Adventure);
+        var endManager = FindObjectOfType<GameOverScreen>();
+        if (endManager != null) endManager.ShowEndScreen(GameOverScreen.GameType.Adventure);
 
         UDPReceiver.SendXAICommand("Focus", sessionId, xaiPath, bgPath);
         StartCoroutine(WaitForXAIAndSaveToDB("Focus", sessionId, xaiPath));
