@@ -45,6 +45,35 @@ mergeInto(LibraryManager.library, {
         SquidlyAPI.firebaseSet(path, data);
 
         console.log("[SquidlyFirebaseBridge] Session saved to Firebase at:", path);
+    },
+
+    /*
+     * CloseGame()
+     * Called by GameSetup.cs when the therapist presses the Home button.
+     * Tells Squidly to exit the game and return to the platform.
+     *
+     * CONFIRM WITH SQUIDLY TEAM: verify the exact method name.
+     * Likely candidates: SquidlyAPI.close() / SquidlyAPI.exit() / SquidlyAPI.goHome()
+     */
+    CloseGame: function () {
+
+        if (typeof SquidlyAPI === "undefined") {
+            console.warn("[SquidlyFirebaseBridge] SquidlyAPI not found — cannot close game.");
+            return;
+        }
+
+        // Call whichever Squidly exit method is available
+        if (typeof SquidlyAPI.close === "function") {
+            SquidlyAPI.close();
+        } else if (typeof SquidlyAPI.exit === "function") {
+            SquidlyAPI.exit();
+        } else if (typeof SquidlyAPI.goHome === "function") {
+            SquidlyAPI.goHome();
+        } else {
+            console.warn("[SquidlyFirebaseBridge] No close/exit method found on SquidlyAPI.");
+        }
+
+        console.log("[SquidlyFirebaseBridge] CloseGame called.");
     }
 
 });

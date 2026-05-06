@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Runtime.InteropServices;
 
 // -----------------------------------------------------------------------
 // GameSetup.cs
@@ -27,6 +28,12 @@ public class GameSetup : MonoBehaviour
 
     [Header("Visuals")]
     public SpriteRenderer playerSpriteRenderer; // Drag Character_0 SpriteRenderer here
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+    // Calls CloseGame() in SquidlyFirebaseBridge.jslib to exit back to Squidly
+    [DllImport("__Internal")]
+    private static extern void CloseGame();
+#endif
 
     void Start()
     {
@@ -68,6 +75,17 @@ public class GameSetup : MonoBehaviour
 
         SessionMetrics.ResetMetrics();
         if (gazeSensor != null) gazeSensor.StartGameWithWarmUp();
+    }
+
+    // Called by the Home button OnClick event in the Inspector
+    public void OnHomeButtonClicked()
+    {
+#if UNITY_WEBGL && !UNITY_EDITOR
+        // Tell Squidly to close the game and return to the platform
+        CloseGame();
+#else
+        Debug.Log("[GameSetup] Home button pressed — CloseGame() only runs in WebGL.");
+#endif
     }
 
     // Reads the Max Distractions input and saves to PlayerPrefs
