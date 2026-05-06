@@ -1,0 +1,95 @@
+# Unity generated
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+[Mm]emory[Cc]aptures/
+
+# Unity asset meta files are required — do NOT ignore *.meta
+
+# Unity cache & crash files
+*.tmp
+sysinfo.txt
+crashlytics-build.properties
+
+# Visual Studio / Rider
+.vs/
+.vscode/
+.idea/
+*.csproj
+*.sln
+*.unityproj
+*.suo
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+*.pidb.meta
+*.pdb.meta
+*.mdb.meta
+
+# OS
+.DS_Store
+.DS_Store?
+Thumbs.db
+Desktop.ini
+
+# Unity packages (don't commit exported packages)
+*.unitypackage
+
+# Runtime / session data
+*.db
+sessions/
+*.csv
+
+# Plastic SCM
+.plastic/
+
+# Out-of-scope scripts — eye tracking calibration/debug
+GazePrototype/Assets/CalibrationManager.cs
+GazePrototype/Assets/CalibrationManager.cs.meta
+GazePrototype/Assets/GazeDebugger.cs
+GazePrototype/Assets/GazeDebugger.cs.meta
+GazePrototype/Assets/GazeLogger.cs
+GazePrototype/Assets/GazeLogger.cs.meta
+GazePrototype/Assets/GazeMapper.cs
+GazePrototype/Assets/GazeMapper.cs.meta
+GazePrototype/Assets/GazeCursor.cs
+GazePrototype/Assets/GazeCursor.cs.meta
+
+# Out-of-scope scripts — quiz game
+GazePrototype/Assets/QuizManager.cs
+GazePrototype/Assets/QuizManager.cs.meta
+GazePrototype/Assets/QuizSetupManager.cs
+GazePrototype/Assets/QuizSetupManager.cs.meta
+GazePrototype/Assets/StaticButtonManager.cs
+GazePrototype/Assets/StaticButtonManager.cs.meta
+
+# Out-of-scope scripts — focus personalized mode
+GazePrototype/Assets/FPGameSetupManager.cs
+GazePrototype/Assets/FPGameSetupManager.cs.meta
+GazePrototype/Assets/FocusModeSelector.cs
+GazePrototype/Assets/FocusModeSelector.cs.meta
+GazePrototype/Assets/FloatingPlayerController.cs
+GazePrototype/Assets/FloatingPlayerController.cs.meta
+GazePrototype/Assets/FloatingCoin.cs
+GazePrototype/Assets/FloatingCoin.cs.meta
+
+# Out-of-scope scripts — activity selector & session history
+GazePrototype/Assets/ActivitySelector.CS
+GazePrototype/Assets/ActivitySelector.CS.meta
+GazePrototype/Assets/SessionHistoryManager.cs
+GazePrototype/Assets/SessionHistoryManager.cs.meta
+
+# Addressables
+**/Assets/AddressableAssetsData/*/*.bin*
+**/Assets/StreamingAssets/aa.meta
+**/Assets/StreamingAssets/*/aa/*
