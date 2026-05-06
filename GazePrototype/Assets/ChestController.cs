@@ -1,114 +1,59 @@
 using UnityEngine;
-using System.Collections;
-using System.IO;
 using System;
+
+// -----------------------------------------------------------------------
+// ChestController.cs
+// Attached to the monster character.
+// Detects when the monster reaches the treasure chest (win condition),
+// saves the session metrics, and triggers the game over screen.
+// -----------------------------------------------------------------------
 
 public class ChestController : MonoBehaviour
 {
-    public Transform targetGoal;
-    public float speed = 2.0f;
     private bool hasReachedGoal = false;
 
-
+    // Fires when the monster's collider overlaps with the chest's collider
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Chest"))
-        {
-            if (!hasReachedGoal)
-            {
-                hasReachedGoal = true;
+        if (!other.CompareTag("Chest") || hasReachedGoal) return;
 
-                var gazeSensor = FindObjectOfType<MonsterMove>();
-                if (gazeSensor != null) gazeSensor.EndGame();
+        hasReachedGoal = true;
 
-                Debug.Log("[GazePlayerController] Chest reached! Requesting XAI Heatmap...");
-                string currentSessionId = "sess_" + DateTime.Now.ToString("yyyyMMdd_HHmmss");
-                string timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
+        // Stop the monster moving and freeze metrics
+        var monsterMove = FindObjectOfType<MonsterMove>();
+        if (monsterMove != null) monsterMove.EndGame();
 
-                string saveDir = Path.GetFullPath(Path.Combine(Application.dataPath, "../../sessions/xai"));
-                if (!Directory.Exists(saveDir)) Directory.CreateDirectory(saveDir);
-                string targetFilePath = Path.Combine(saveDir, $"xai_Focus_{currentSessionId}_{timestamp}.png");
+        // Play chest open animation
+        Animator chestAnim = other.GetComponent<Animator>();
+        if (chestAnim != null) chestAnim.SetTrigger("OpenTrigger");
 
-                StartCoroutine(CaptureAndTriggerXAI(currentSessionId, targetFilePath));
-            }
-
-            Animator chestAnim = other.GetComponent<Animator>();
-            if (chestAnim != null)
-            {
-                chestAnim.SetTrigger("OpenTrigger");
-            }
-        }
+        SaveSessionAndShowEndScreen();
     }
 
-    private IEnumerator WaitForXAIAndSaveToDB(string activityType, string sessionId, string heatmapPath)
+    private void SaveSessionAndShowEndScreen()
     {
-        bool fileReady = false;
-        float waitTime = 0f;
-        float maxWaitTime = 35.0f; // XAI does 196 ONNX passes on CPU — needs up to ~30s
+        string sessionId = "sess_" + DateTime.Now.ToString("yyyyMMdd_HHmmss");
+        string dateStr = DateTime.Now.ToString("yyyy-MM-dd HH:mm");
 
-        while (waitTime < maxWaitTime)
-        {
-            if (File.Exists(heatmapPath))
-            {
-                yield return new WaitForSecondsRealtime(0.2f);
-                fileReady = true;
-                Debug.Log($"[GazePlayerController] XAI Heatmap ready after {waitTime:F1}s");
-                break;
-            }
+        // Save the 6 session metrics to the database
+        // FOR SQUIDLY: DataSaver (SQLite) will be replaced with SquidlyFirebaseBridge
+        DataSaver dataSaver = FindObjectOfType<DataSaver>();
+        if (dataSaver == null)
+            dataSaver = new GameObject("DataSaver").AddComponent<DataSaver>();
 
-            yield return new WaitForSecondsRealtime(1.0f);
-            waitTime += 1.0f;
-            Debug.Log($"[GazePlayerController] Waiting for XAI Heatmap... ({waitTime:F0}s / {maxWaitTime:F0}s)");
-        }
+        dataSaver.InsertFocusSession(
+            sessionId,
+            dateStr,
+            SessionMetrics.adventureTotalDuration,
+            SessionMetrics.adventureGazeOnTarget,
+            SessionMetrics.adventureLongestFixation,
+            SessionMetrics.adventureFocusBreaks,
+            SessionMetrics.adventureOffScreenCount,
+            SessionMetrics.adventureTimeToFirstFixation
+        );
 
-        if (!fileReady)
-        {
-            Debug.LogWarning("[GazePlayerController] XAI not saved after 35s — face may not have been detected during session, or Python server was off. Saving DB without heatmap.");
-        }
-
-        DataSaver dbManager = FindObjectOfType<DataSaver>();
-        if (dbManager == null)
-        {
-            Debug.LogWarning("[GazePlayerController] DatabaseManager not found — creating one.");
-            dbManager = new GameObject("DataSaver").AddComponent<DataSaver>();
-        }
-
-        if (dbManager != null)
-        {
-            string dateStr = DateTime.Now.ToString("yyyy-MM-dd HH:mm");
-            dbManager.InsertFocusSession(
-                sessionId,
-                dateStr,
-                SessionMetrics.adventureTotalDuration,
-                SessionMetrics.adventureGazeOnTarget,
-                SessionMetrics.adventureLongestFixation,
-                SessionMetrics.adventureFocusBreaks,
-                SessionMetrics.adventureOffScreenCount,
-                SessionMetrics.adventureTimeToFirstFixation,
-                heatmapPath,  // absolute path to FYP_GAZE/sessions/xai/
-                "Good focus today!"
-            );
-        }
-
-        Debug.Log("[GazePlayerController] Focus Session saved to DB gracefully.");
-
-        var endManager = FindObjectOfType<GameOverScreen>();
-        if (endManager != null) endManager.NotifySessionSaveComplete();
-    }
-
-    private IEnumerator CaptureAndTriggerXAI(string sessionId, string xaiPath)
-    {
-        // Capture game screen before end popup appears
-        yield return new WaitForEndOfFrame();
-        string bgPath = xaiPath.Replace(".png", "_bg.png");
-        Texture2D shot = ScreenCapture.CaptureScreenshotAsTexture();
-        File.WriteAllBytes(bgPath, shot.EncodeToPNG());
-        Destroy(shot);
-
-        var endManager = FindObjectOfType<GameOverScreen>();
-        if (endManager != null) endManager.ShowEndScreen(GameOverScreen.GameType.Adventure);
-
-        // UDPReceiver.SendXAICommand("Focus", sessionId, xaiPath, bgPath);
-        StartCoroutine(WaitForXAIAndSaveToDB("Focus", sessionId, xaiPath));
+        // Show the end screen
+        var endScreen = FindObjectOfType<GameOverScreen>();
+        if (endScreen != null) endScreen.ShowEndScreen(GameOverScreen.GameType.Adventure);
     }
 }

@@ -9,14 +9,6 @@ using UnityEngine.SceneManagement;
 // HOW IT WORKS:
 //   The monster moves ONLY while the player is hovering over it.
 //   Currently driven by mouse hover (OnMouseEnter / OnMouseExit).
-//
-// FOR SQUIDLY INTEGRATION:
-//   Replace OnMouseEnter / OnMouseExit with Squidly's eye gaze cursor.
-//   Squidly provides real-time gaze coordinates via SquidlyAPI.addCursorListener.
-//   Wire those coordinates into a cursor GameObject and call
-//   OnGazeEnter() / OnGazeExit() below instead of the mouse events,
-//   OR move the cursor GameObject over the monster collider to keep
-//   the same trigger-based flow.
 // -----------------------------------------------------------------------
 
 public class MonsterMove : MonoBehaviour
@@ -38,6 +30,9 @@ public class MonsterMove : MonoBehaviour
     private bool gameStarted = false;    // false until StartGameWithWarmUp() fires
     private Animator anim;
     private bool suppressNextBreak = false; // suppresses a false focus-break on re-entry
+
+    // ORIGINAL EYE TRACKER: tracked whether the child's face was visible to the eye tracker
+    // private bool wasFaceFound = true;
 
     // Metric tracking
     private float currentFixationTime = 0f; // running streak of continuous hover time
@@ -85,6 +80,27 @@ public class MonsterMove : MonoBehaviour
 
         // Always tick total session duration
         SessionMetrics.adventureTotalDuration += Time.deltaTime;
+
+        // -------------------------------------------------------------------
+        // ORIGINAL EYE TRACKER — face detection logic (commented out)
+        // Tracked whether the child's face was visible to the eye tracker.
+        // If face was lost it counted as off-screen and suppressed a false
+        // focus-break when gaze returned to the monster.
+        // FOR SQUIDLY: re-enable if SquidlyAPI exposes face/presence detection.
+        // -------------------------------------------------------------------
+        // bool trackerConnected = UDPReceiver.IsReceiving;
+        // bool isFaceFound = !trackerConnected || UDPReceiver.FaceFound;
+        // if (wasFaceFound && !isFaceFound)
+        // {
+        //     SessionMetrics.adventureOffScreenCount++;
+        //     if (isHovered) suppressNextBreak = true;
+        //     Debug.Log("[MonsterMove] Face lost — off-screen count incremented.");
+        // }
+        // else if (!wasFaceFound && isFaceFound)
+        // {
+        //     Debug.Log("[MonsterMove] Face found again — resuming interaction.");
+        // }
+        // wasFaceFound = isFaceFound;
 
         // -------------------------------------------------------------------
         // MOVEMENT + METRIC TRACKING

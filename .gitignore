@@ -52,6 +52,7 @@ Desktop.ini
 *.db
 sessions/
 *.csv
+*.json
 
 # Plastic SCM
 .plastic/
