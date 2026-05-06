@@ -77,8 +77,9 @@ public class MonsterMove : MonoBehaviour
         // Track session duration
         SessionMetrics.adventureTotalDuration += Time.deltaTime;
 
-        bool trackerConnected = UDPReceiver.IsReceiving;
-        bool isFaceFound = !trackerConnected || UDPReceiver.FaceFound;
+        // bool trackerConnected = UDPReceiver.IsReceiving;
+        // bool isFaceFound = !trackerConnected || UDPReceiver.FaceFound;
+        bool isFaceFound = true;
         if (wasFaceFound && !isFaceFound)
         {
             Debug.Log("[GazeSensor] Head not detected. Pausing gaze-driven interaction and counting off-screen.");

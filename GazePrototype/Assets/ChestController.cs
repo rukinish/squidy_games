@@ -108,7 +108,7 @@ public class ChestController : MonoBehaviour
         var endManager = FindObjectOfType<GameOverScreen>();
         if (endManager != null) endManager.ShowEndScreen(GameOverScreen.GameType.Adventure);
 
-        UDPReceiver.SendXAICommand("Focus", sessionId, xaiPath, bgPath);
+        // UDPReceiver.SendXAICommand("Focus", sessionId, xaiPath, bgPath);
         StartCoroutine(WaitForXAIAndSaveToDB("Focus", sessionId, xaiPath));
     }
 }

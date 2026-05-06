@@ -28,10 +28,10 @@ public class GameOverScreen : MonoBehaviour
         Debug.Log($"[SessionEndManager] endPopupPanel assigned: {endPopupPanel != null}, summaryText assigned: {summaryText != null}, saveStatusText assigned: {saveStatusText != null}");
 
         Time.timeScale = 0f;  // freeze everything while summary is visible
-        var cursor = FindObjectOfType<EyeTrackerCursor>();
-        if (cursor != null) cursor.gameObject.SetActive(false);
-        var gazeCursor = FindObjectOfType<GazeCursor>();
-        if (gazeCursor != null) gazeCursor.gameObject.SetActive(false);
+        // var cursor = FindObjectOfType<EyeTrackerCursor>();
+        // if (cursor != null) cursor.gameObject.SetActive(false);
+        // var gazeCursor = FindObjectOfType<GazeCursor>();
+        // if (gazeCursor != null) gazeCursor.gameObject.SetActive(false);
 
         isSaveComplete = false;
         SetPopupButtonsInteractable(false);
